@@ -125,6 +125,109 @@ public class Range {
         }
         return n;
     }
+
+    public int[] searchRange(int[] nums, int target) {
+        int[] r={searchLow(nums,target),searchHigh(nums,target)};
+        return r;
+    }
+    private int searchLow(int[] nums,int target){
+        int low=0,high=nums.length;
+        while(low<high){
+            int mid=(low+high)>>>1;
+            if(target<=nums[mid]){
+                high=mid;
+            }else {
+                low=mid+1;
+            }
+        }
+        if(low<nums.length&&nums[low]==target){
+            return low;
+        }else {
+            return -1;
+        }
+    }
+    private int searchHigh(int[] nums,int target){
+        int low=0,high=nums.length;
+        while(low<high){
+            int mid=(low+high)>>>1;
+            if(target<nums[mid]){
+                high=mid;
+            }else {
+                low=mid+1;
+            }
+        }
+        if(high>0&&high<=nums.length&&nums[high-1]==target){
+            return high-1;
+        }else {
+            return -1;
+        }
+    }
+
+    public int longestConsecutive(int[] nums) {
+        HashSet<Integer> set=new HashSet<>();
+        for(int n:nums){
+            set.add(n);
+        }
+        int longest=0;
+        for(int n:nums){
+            if(!set.contains(n-1)){
+                int p;
+                for(p=n;set.contains(p);p++);
+                if(p-n>longest){longest=p-n;}
+            }
+        }
+        return longest;
+    }
+
+    public String fractionToDecimal(int numerator, int denominator) {
+        StringBuilder intPart=new StringBuilder();
+        if((numerator>0&&denominator<0)||(numerator<0&&denominator>0)){
+            intPart.append('-');
+        }
+        long n=numerator>0?(long)numerator:-(long)numerator;
+        long d=denominator>0?(long)denominator:-(long)denominator;
+        long q=n/d; //quotient
+        intPart.append(q);
+        long r=n%d; //remaining
+        if(r==0){
+            return intPart.toString();
+        }
+        char[] digit="0123456789".toCharArray();
+        intPart.append('.');
+        StringBuilder dec=new StringBuilder();
+        int i=0;
+        HashMap<Long,Integer> map=new HashMap<>();
+        while(r>0&&!map.containsKey(r)){
+            map.put(r,i++);
+            r*=10;
+            dec.append(digit[(int)(r/d)]);
+            r%=d;
+        }
+        if(r>0){
+            int start=map.get(r);
+            return intPart+dec.substring(0,start)
+                    +"("+dec.substring(start)+")";
+        }else {
+            return intPart.toString()+dec;
+        }
+    }
+
+    public int[] corpFlightBookings(int[][] bookings, int n) {
+        int[] diff=new int[n];
+        for(int[] b:bookings){
+            int l=b[0]-1,r=b[1]-1,s=b[2];
+            diff[l]+=s;
+            if(r+1<n){
+                diff[r+1]-=s;
+            }
+        }
+        for(int i=1;i<n;i++){
+            diff[i]+=diff[i-1];
+        }
+        return diff;
+    }
+
+    private void add(int[] t,int )
 }
 
 class BinaryIndexedTree {
@@ -154,5 +257,75 @@ class BinaryIndexedTree {
 
     int lowbit(int k) {
         return k & (-k);
+    }
+}
+
+class Skyline{
+    public List<List<Integer>> getSkyline(int[][] buildings) {
+        return getSkyline(buildings,0,buildings.length);
+    }
+    private LinkedList<List<Integer>> getSkyline(int[][] buildings,int low,int high) {
+        if(high-low==0){
+            return new LinkedList<>();
+        }else if(high-low==1){
+            int x1=buildings[low][0],x2=buildings[low][1],y=buildings[low][2];
+            return new LinkedList<>
+                    (Arrays.asList(Arrays.asList(x1,y),Arrays.asList(x2,0)));
+        }else {
+            int mid=(low+high)>>>1;
+            LinkedList<List<Integer>> l,r;
+            l=getSkyline(buildings,low,mid);
+            r=getSkyline(buildings,mid,high);
+            return merge(l,r);
+        }
+    }
+    private LinkedList<List<Integer>>
+        merge(LinkedList<List<Integer>> l,LinkedList<List<Integer>> r){
+        int ly=0,ry=0,x=0,y=0;
+        LinkedList<List<Integer>> m=new LinkedList<>();
+        while(!l.isEmpty()||!r.isEmpty()){
+            if(l.isEmpty()){
+                List<Integer> p=r.removeFirst();
+                x=p.get(0);
+                ry=p.get(1);
+                if(y!=ry){
+                    y=ry;
+                    addPoint(m,x,y);
+                }
+            }else if(r.isEmpty()){
+                List<Integer> p=l.removeFirst();
+                x=p.get(0);
+                ly=p.get(1);
+                if(y!=ly){
+                    y=ly;
+                    addPoint(m,x,y);
+                }
+            }else {
+                List<Integer> lp=l.getFirst();
+                List<Integer> rp=r.getFirst();
+                if(lp.get(0)<rp.get(0)){
+                    x=lp.get(0);
+                    ly=lp.get(1);
+                    l.removeFirst();
+                }else {
+                    x=rp.get(0);
+                    ry=rp.get(1);
+                    r.removeFirst();
+                }
+                int ymax=Integer.max(ly,ry);
+                if(y!=ymax){
+                    y=ymax;
+                    addPoint(m,x,y);
+                }
+            }
+        }
+        return m;
+    }
+    private void addPoint(LinkedList<List<Integer>> m,int x,int y){
+        if(!m.isEmpty()&&m.getLast().get(0)==x){
+            m.getLast().set(1,y);
+        }else {
+            m.addLast(Arrays.asList(x,y));
+        }
     }
 }

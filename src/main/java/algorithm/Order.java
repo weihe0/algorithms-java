@@ -1,5 +1,7 @@
 package algorithm;
 
+import org.junit.Test;
+
 import java.util.*;
 
 public class Order {
@@ -91,6 +93,10 @@ class SmallNumberAfterSelf {
             }
         }
     }
+
+    public void wiggleSort(int[] nums) {
+
+    }
 }
 
 class MedianFinder {
@@ -130,5 +136,28 @@ class ThreeSum {
             }
         }
         return l;
+    }
+}
+
+class LargestNumber implements Comparator<String>{
+    public String largestNumber(int[] nums){
+        String[] numStr=new String[nums.length];
+        for(int i=0;i<nums.length;i++){
+            numStr[i]=Integer.toString(nums[i]);
+        }
+        Arrays.sort(numStr,this);
+        if(numStr[0].equals("0")){
+            return "0";
+        }
+        StringBuilder sb=new StringBuilder();
+        for(String is:numStr){
+            sb.append(is);
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public int compare(String s, String t) {
+        return (t+s).compareTo(s+t);
     }
 }
