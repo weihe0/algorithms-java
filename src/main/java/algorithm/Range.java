@@ -227,7 +227,57 @@ public class Range {
         return diff;
     }
 
-    private void add(int[] t,int )
+    public int largestRectangleArea(int[] heights) {
+        int len=heights.length;
+        int[] s=new int[len];
+        int top=0;
+        int maxarea=0;
+        int i=0;
+        while(i<len){
+            if(top==0||heights[i]>=heights[s[top-1]]){
+                s[top++]=i++;
+            }else {
+                int rec=s[--top];
+                int left=top==0?-1:s[top-1];
+                int area=(i-left-1)*heights[rec];
+                if(area>maxarea){
+                    maxarea=area;
+                }
+            }
+        }
+        while(top>0){
+            int rec=s[--top];
+            int left=top==0?-1:s[top-1];
+            int area=(i-left-1)*heights[rec];
+            if(area>maxarea){
+                maxarea=area;
+            }
+        }
+        return maxarea;
+    }
+
+    public int trap(int[] height) {
+        int left=0,leftMax=0,right=height.length-1,rightMax=0;
+        int rain=0;
+        while(left<right){
+            if(height[left]<height[right]){
+                if(height[left]>=leftMax){
+                    leftMax=height[left];
+                }else {
+                    rain+=leftMax-height[left];
+                }
+                left++;
+            }else {
+                if(height[right]>=rightMax){
+                    rightMax=height[right];
+                }else {
+                    rain+=rightMax-height[right];
+                }
+                right--;
+            }
+        }
+        return rain;
+    }
 }
 
 class BinaryIndexedTree {

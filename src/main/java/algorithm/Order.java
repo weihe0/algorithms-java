@@ -137,6 +137,20 @@ class ThreeSum {
         }
         return l;
     }
+
+    public boolean increasingTriplet(int[] nums) {
+        int ni=Integer.MAX_VALUE,nj=Integer.MAX_VALUE;
+        for(int n:nums){
+            if(n<ni){
+                ni=n;
+            }else if(n>ni && n<=nj){
+                nj=n;
+            }else if(n>nj){
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 class LargestNumber implements Comparator<String>{
