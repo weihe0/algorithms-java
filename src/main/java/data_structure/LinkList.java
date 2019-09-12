@@ -1,5 +1,7 @@
 package data_structure;
 
+import org.junit.Test;
+
 import java.util.*;
 
 public class LinkList {
@@ -25,6 +27,23 @@ public class LinkList {
         }
         return newHead;
     }
+
+    public ListNode oddEvenList(ListNode head) {
+        if(head==null){return null;}
+        ListNode evenDummy=new ListNode(0);
+        ListNode evenTail=evenDummy;
+        ListNode odd=head;
+        while(odd.next!=null){
+            ListNode even=odd.next;
+            odd.next=even.next;
+            even.next=null;
+            evenTail.next=even;
+            evenTail=even;
+            if(odd.next!=null){odd=odd.next;}
+        }
+        odd.next=evenDummy.next;
+        return  head;
+    }
 }
 
 class Node {
@@ -36,4 +55,10 @@ class Node {
         this.next = next;
         this.random = random;
     }
+}
+
+class ListNode{
+    int val;
+    ListNode next;
+    ListNode(int x){val=x;}
 }

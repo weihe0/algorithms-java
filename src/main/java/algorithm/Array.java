@@ -3,6 +3,8 @@ import org.junit.Test;
 
 import java.util.*;
 
+import java.util.*;
+
 public class Array {
     public List<Integer> spiralOrder(int[][] matrix) {
         if(matrix.length==0){return new ArrayList<>();}
@@ -42,12 +44,32 @@ public class Array {
         }
         return l;
     }
-    @Test
-    public void four(){
-        int[][] m={{1,2},{3,4}};
-
-        for(int i:spiralOrder(m)){
-            System.out.printf("%d ",i);
+    public int[] nextGreaterElement(int[] nums1, int[] nums2) {
+        TreeMap<Integer,Integer> m=new TreeMap<>();
+        for(int i=0;i<nums1.length;i++){
+            m.put(nums1[i],i);
         }
+        int[] nexts=new int[nums1.length];
+        for(int i=0;i<nums1.length;i++){
+            nexts[i]=-1;
+        }
+        int[] s=new int[nums2.length];
+        int t=-1;
+        for(int n:nums2){
+            while(t>=0&&s[t]<n){
+                if(m.containsKey(s[t])){
+                    int i=m.get(s[t]);
+                    nexts[i]=n;
+                }
+                --t;
+            }
+            s[++t]=n;
+        }
+        return nexts;
+    }
+    @Test
+    public void testIncStack(){
+        int n1[]={4,1,2},n2[]={1,3,4,2};
+        nextGreaterElement(n1,n2);
     }
 }

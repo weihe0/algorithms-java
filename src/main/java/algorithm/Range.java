@@ -379,3 +379,23 @@ class Skyline{
         }
     }
 }
+
+class MergeIntervals implements Comparator<int[]> {
+    public int[][] merge(int[][] intervals) {
+        Arrays.sort(intervals,this);
+        LinkedList<int[]> l=new LinkedList<>();
+        for(int[] i:intervals){
+            if(l.isEmpty()||l.getLast()[1]<i[0]){
+                l.addLast(i);
+            }else {
+                l.getLast()[1]=Math.max(l.getLast()[1],i[1]);
+            }
+        }
+        return l.toArray(new int[l.size()][]);
+    }
+
+    @Override
+    public int compare(int[] i0, int[] i1) {
+        return Integer.compare(i0[0],i1[0]);
+    }
+}

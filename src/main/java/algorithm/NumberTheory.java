@@ -83,6 +83,32 @@ public class NumberTheory {
         }
         return sentinel.next;
     }
+
+    public String multiply(String num1, String num2) {
+        if(num1.compareTo("0")==0||num2.compareTo("0")==0){return "0";}
+        char[] p=new char[num1.length()+num2.length()];
+        for(int i=0;i<p.length;i++) p[i]='0';
+        for(int i=0;i<num1.length();i++){
+            int tens=0;
+            for(int j=0;j<num2.length();j++){
+                int ni=num1.charAt(num1.length()-1-i)-'0';
+                int nj=num2.charAt(num2.length()-1-j)-'0';
+                int offset=p.length-1-i-j;
+                int bij=p[offset]-'0';
+                int pij=ni*nj+bij+tens;
+                int units=pij%10;
+                p[offset]=(char)(units+'0');
+                tens=pij/10;
+            }
+            int offset=p.length-1-i-num2.length();
+            p[offset]=(char)(p[offset]+tens);
+        }
+        if(p[0]=='0'){
+            return new String(p,1,p.length-1);
+        }else {
+            return new String(p);
+        }
+    }
 }
 
 class ListNode{

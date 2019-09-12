@@ -148,6 +148,38 @@ public class BinaryTree {
         }
         return l;
     }
+
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root==p||root==q||root==null){
+            return root;
+        }
+        TreeNode left=lowestCommonAncestor(root.left,p,q);
+        TreeNode right=lowestCommonAncestor(root.right,p,q);
+        if(left==null){
+            if(right==null){
+                return null;
+            }else {
+                return right;
+            }
+        }else if(right==null){
+            return left;
+        }else {
+            return root;
+        }
+    }
+
+    public void flatten(TreeNode root) {
+        while(root!=null){
+            if(root.left!=null){
+                TreeNode pre;
+                for(pre=root.left;pre.right!=null;pre=pre.right);
+                pre.right=root.right;
+                root.right=root.left;
+                root.left=null;
+            }
+            root=root.right;
+        }
+    }
 }
 
 class TreeNode{

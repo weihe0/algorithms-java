@@ -372,6 +372,105 @@ public class StringManipulation {
                 throw new ArithmeticException();
         }
     }
+
+    public int longestSubstring(String s, int k) {
+        if(s.length()==0||k<=1){
+            return s.length();
+        }else {
+            return longestSubstring(s,0,s.length(),k);
+        }
+    }
+    private int longestSubstring(String s, int start, int end, int k){
+        int lessK=0,count[]=new int[26];
+        for(int i=start;i<end;i++){
+            int ord=s.charAt(i)-'a';
+            if(count[ord]==0){
+                lessK++;
+            }
+            count[ord]++;
+            if(count[ord]==k){
+                lessK--;
+            }
+        }
+        if(lessK==0){return end-start;}
+        int longest=0;
+        int i,j;
+        i=0;
+        while(i<end){
+            for(j=i;j<end&&count[s.charAt(j)-'a']>=k;j++);
+            if(j-i>longest){
+                longest=Math.max(longest, longestSubstring(s,i,j,k));
+            }
+            i=j+1;
+        }
+        return longest;
+    }
+
+    public boolean isValid(String s) {
+        char[] stk=new char[s.length()];
+        int top=0;
+        for(int i=0;i<s.length();i++){
+            switch (s.charAt(i)){
+                case '(': case '{': case '[':
+                    stk[top++]=s.charAt(i);
+                    break;
+                case ')':
+                    if(top>0&&stk[top-1]=='('){
+                        top--;
+                        break;
+                    }else {
+                        return false;
+                    }
+                case '}':
+                    if(top>0&&stk[top-1]=='{'){
+                       top--;
+                       break;
+                    }else {
+                        return false;
+                    }
+                case ']':
+                    if(top>0&&stk[top-1]=='['){
+                        top--;
+                        break;
+                    }else {
+                        return false;
+                    }
+            }
+        }
+        return top==0;
+    }
+
+    @Test
+    public void testValid(){
+        System.out.println(simplifyPath("/h/"));
+    }
+
+    public String simplifyPath(String path) {
+        LinkedList<String> p=new LinkedList<>();
+        String[] cp=path.split("/");
+        for(String d:cp){
+            switch (d){
+                case "":
+                case ".":
+                    break;
+                case "..":
+                    p.pollLast();
+                    break;
+                default:
+                    p.offerFirst(d);
+            }
+        }
+        if(p.isEmpty()){
+            return "/";
+        }else {
+            StringBuilder s=new StringBuilder();
+            for(String d:p){
+                s.append('/');
+                s.append(d);
+            }
+            return s.toString();
+        }
+    }
 }
 
 
@@ -458,6 +557,50 @@ class WordBreak {
             } else {
                 dfs(j, sent + ' ' + word, s, len, next);
             }
+        }
+    }
+}
+
+class WordSearch{
+    boolean[][] visited;
+    public boolean exist(char[][] board, String word) {
+        int r=board.length,c=board[0].length;
+        visited=new boolean[r][c];
+        for(int i=0;i<r;i++){
+            for(int j=0;j<c;j++){
+                if(dfs(board,i,j,word,0)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean dfs(char[][] board,int i,int j,String word,int k){
+        if(board[i][j]==word.charAt(k)){
+            if(k==word.length()-1){
+                return true;
+            }else {
+                visited[i][j]=true;
+                if(i-1>=0&&!visited[i-1][j]&&dfs(board,i-1,j,word,k+1)){
+                    visited[i][j]=false;
+                    return true;
+                }else if(i+1<board.length&&!visited[i+1][j]&&dfs(board,i+1,j,word,k+1)){
+                    visited[i][j]=false;
+                    return true;
+                }else if(j-1>=0&&!visited[i][j-1]&&dfs(board,i,j-1,word,k+1)){
+                    visited[i][j]=false;
+                    return true;
+                }else if(j+1<board[i].length&&!visited[i][j+1]&&dfs(board,i,j+1,word,k+1)){
+                    visited[i][j]=false;
+                    return true;
+                }else {
+                    visited[i][j]=false;
+                    return false;
+                }
+            }
+        }else {
+            return false;
         }
     }
 }

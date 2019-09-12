@@ -47,6 +47,28 @@ public class Order {
             return (leftMax + rightMin) / 2.0;
         }
     }
+
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        if(nums.length==0){return new int[0];}
+        int[] winMax=new int[nums.length-k+1];
+        int s=0;
+        MonoQueue mq=new MonoQueue(k);
+        for(int j=0;j<k;j++){
+            mq.push(nums[j]);
+        }
+        winMax[s++]=mq.max();
+        for(int j=k;j<nums.length;j++){
+            mq.push(nums[j]);
+            mq.pop(nums[j-k]);
+            winMax[s++]=mq.max();
+        }
+        return winMax;
+    }
+
+    @Test
+    public void testOne(){
+        maxSlidingWindow(new int[]{1,2},2);
+    }
 }
 
 class SmallNumberAfterSelf {
@@ -97,6 +119,60 @@ class SmallNumberAfterSelf {
     public void wiggleSort(int[] nums) {
 
     }
+
+
+
+
+}
+
+class MonoQueue{
+    private int a[],f,r;
+    MonoQueue(int k){
+        a=new int[k+1];
+        f=r=0;
+    }
+    boolean isEmpty(){return f==r;}
+    void push(int n){
+        while(!isEmpty()&&getBack()<n){
+            popBack();
+        }
+        pushBack(n);
+    }
+    void pop(int n){
+        if(getFront()==n){
+            popFront();
+        }
+    }
+    int max(){return getFront();}
+    private int getBack(){
+        return r==0?a[a.length-1]:a[r-1];
+    }
+    private void pushBack(int n){
+        a[r]=n;
+        if(r==a.length-1){
+            r=0;
+        }else {
+            r++;
+        }
+    }
+    private int getFront(){
+        return a[f];
+    }
+    private void popFront(){
+        if(f==a.length-1){
+            f=0;
+        }else {
+            f++;
+        }
+    }
+    private void popBack(){
+        if(r==0){
+            r=a.length-1;
+        }else {
+            r--;
+        }
+    }
+
 }
 
 class MedianFinder {
